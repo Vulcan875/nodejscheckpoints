@@ -1,0 +1,58 @@
+javascript :
+
+const mongoose = require('mongoose');
+require('dotenv').config();
+
+// Connect to MongoDB
+mongoose.connect(process.env.MONGO_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+})
+  .then(() => console.log('Connected to MongoDB'))
+  .catch((err) => console.error(`Error connecting to MongoDB: ${err}`));
+
+// Define the Person Schema
+const personSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: true,
+  },
+  age: Number,
+  favoriteFoods: [String],
+});
+
+// Create the Person model
+const Person = mongoose.model('Person', personSchema);
+
+// Your code for CRUD operations will go here
+
+
+// Create a new person
+const newPerson = new Person({
+  name: 'John Doe',
+  age: 30,
+  favoriteFoods: ['Pizza', 'Burger'],
+});
+
+// Save the new person to the database
+newPerson.save()
+  .then((data) => {
+    console.log('New person saved:', data);
+  })
+  .catch((err) => {
+    console.error('Error saving person:', err);
+  });
+
+// Create an array of people
+const arrayOfPeople = [
+  { name: 'Alice', age: 25, favoriteFoods: ['Sushi', 'Pasta'] },
+  { name: 'Bob', age: 35, favoriteFoods: ['Steak', 'Chicken'] },
+];
+
+// Create several people using Model.create()
+Person.create(arrayOfPeople)
+  .then((data) => {
+    console.log('Multiple people created:', data);
+  })
+  .catch((err) => {
+    console.error('
