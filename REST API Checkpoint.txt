@@ -1,0 +1,97 @@
+javascript :
+
+
+const mongoose = require('mongoose');
+
+const userSchema = new mongoose.Schema({
+  username: String,
+  email: String,
+});
+
+module.exports = mongoose.model('User', userSchema);
+
+const express = require('express');
+const mongoose = require('mongoose');
+const dotenv = require('dotenv');
+
+dotenv.config();
+
+const app = express();
+const PORT = process.env.PORT || 3000;
+const MONGODB_URI = process.env.MONGODB_URI;
+
+// Connect to the MongoDB database
+mongoose.connect(MONGODB_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
+
+// Define middleware and routes here
+
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+});
+
+const express = require('express');
+const mongoose = require('mongoose');
+const User = require('./models/User'); // Import the User model
+const dotenv = require('dotenv');
+
+dotenv.config();
+
+const app = express();
+const PORT = process.env.PORT || 3000;
+const MONGODB_URI = process.env.MONGODB_URI;
+
+mongoose.connect(MONGODB_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
+
+app.use(express.json());
+
+// GET: Return all users
+app.get('/users', async (req, res) => {
+  try {
+    const users = await User.find();
+    res.json(users);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+// POST: Add a new user to the database
+app.post('/users', async (req, res) => {
+  const { username, email } = req.body;
+
+  const newUser = new User({
+    username,
+    email,
+  });
+
+  try {
+    const savedUser = await newUser.save();
+    res.status(201).json(savedUser);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+});
+
+// PUT: Edit a user by ID
+app.put('/users/:id', async (req, res) => {
+  // Implement the logic to update a user by their ID
+});
+
+// DELETE: Remove a user by ID
+app.delete('/users/:id', async (req, res) => {
+  // Implement the logic to delete a user by their ID
+});
+
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+});
+
+MONGODB_URI=your_mongodb_connection_string
+PORT=3000
+
+
