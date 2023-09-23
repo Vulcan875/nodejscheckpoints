@@ -1,0 +1,99 @@
+javascript :
+
+const { MongoClient } = require('mongodb');
+
+// MongoDB connection URL
+const url = 'mongodb://localhost:27017';
+
+// Database and Collection names
+const dbName = 'contact';
+const collectionName = 'contactlist';
+
+// Connect to MongoDB
+MongoClient.connect(url, { useUnifiedTopology: true }, async (err, client) => {
+  if (err) throw err;
+
+  console.log('Connected to MongoDB');
+
+  const db = client.db(dbName);
+  const collection = db.collection(collectionName);
+
+  // Insert documents
+  const insertResult = await collection.insertMany([
+    {
+      lastName: 'Ben Lahmer',
+      firstName: 'Fares',
+      email: 'fares@gmail.com',
+      age: 26,
+    },
+    {
+      lastName: 'Kefi',
+      firstName: 'Seif',
+      email: 'kefi@gmail.com',
+      age: 15,
+    },
+    {
+      lastName: 'Fatnassi',
+      firstName: 'Sarra',
+      email: 'sarra.f@gmail.com',
+      age: 40,
+    },
+    {
+      lastName: 'Ben Yahia',
+      firstName: 'Rym',
+      age: 4,
+    },
+    {
+      lastName: 'Cherif',
+      firstName: 'Sami',
+      age: 3,
+    },
+  ]);
+
+  console.log('Documents inserted:', insertResult.insertedCount);
+
+  // Display all contacts
+  const allContacts = await collection.find().toArray();
+  console.log('All Contacts:');
+  console.log(allContacts);
+
+  // Display one contact by ID (replace 'contactId' with the actual ID)
+  const contactId = '<Replace with the contact ID>';
+  const oneContact = await collection.findOne({ _id: contactId });
+  console.log('One Contact by ID:');
+  console.log(oneContact);
+
+  // Display contacts with age > 18
+  const adults = await collection.find({ age: { $gt: 18 } }).toArray();
+  console.log('Adult Contacts:');
+  console.log(adults);
+
+  // Display contacts with age > 18 and name containing 'ah'
+  const filteredContacts = await collection
+    .find({ $and: [{ age: { $gt: 18 } }, { $or: [{ lastName: /ah/i }, { firstName: /ah/i }] }] })
+    .toArray();
+  console.log('Filtered Contacts:');
+  console.log(filteredContacts);
+
+  // Change 'Kefi Seif' to 'Kefi Anis'
+  const updateResult = await collection.updateOne(
+    { firstName: 'Seif', lastName: 'Kefi' },
+    { $set: { firstName: 'Anis' } }
+  );
+  console.log('Updated:', updateResult.modifiedCount);
+
+  // Delete contacts aged under 5
+  const deleteResult = await collection.deleteMany({ age: { $lt: 5 } });
+  console.log('Deleted:', deleteResult.deletedCount);
+
+  // Display all contacts again
+  const updatedContacts = await collection.find().toArray();
+  console.log('Updated Contacts:');
+  console.log(updatedContacts);
+
+  // Close the MongoDB connection
+  client.close();
+});
+
+
+
