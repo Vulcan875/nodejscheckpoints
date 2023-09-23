@@ -1,0 +1,74 @@
+partie html
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/styles.css">
+    <title>Home</title>
+</head>
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/services">Our Services</a></li>
+                <li><a href="/contact">Contact us</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <h1>Welcome to our Home Page</h1>
+        <!-- Your content here -->
+    </main>
+</body>
+</html>
+
+
+
+parite javascript :
+
+const express = require('express');
+const app = express();
+const port = 3000; // You can change this port as needed
+const path = require('path');
+const workingHoursMiddleware = require('./middlewares/workingHoursMiddleware');
+
+// Middleware to verify working hours
+app.use(workingHoursMiddleware);
+
+// Serve static files from the public directory
+app.use(express.static(path.join(__dirname, 'public')));
+
+// Define routes
+app.get('/', (req, res) => {
+    res.render('home.ejs');
+});
+
+app.get('/services', (req, res) => {
+    res.render('services.ejs');
+});
+
+app.get('/contact', (req, res) => {
+    res.render('contact.ejs');
+});
+
+// Start the server
+app.listen(port, () => {
+    console.log(`Server is running on http://localhost:${port}`);
+});
+
+module.exports = (req, res, next) => {
+    const now = new Date();
+    const dayOfWeek = now.getDay(); // 0 (Sunday) to 6 (Saturday)
+    const hourOfDay = now.getHours(); // 0 to 23
+
+    if (dayOfWeek >= 1 && dayOfWeek <= 5 && hourOfDay >= 9 && hourOfDay < 17) {
+        next(); // Continue with the request
+    } else {
+        res.send('Sorry, the website is only available during working hours (Monday to Friday, 9 AM to 5 PM).');
+    }
+};
+
