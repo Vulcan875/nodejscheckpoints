@@ -1,0 +1,28 @@
+Entities:
+
+Gymnasium
+
+Attributes: GymnasiumID (Unique Identifier), Name, Address, Telephone Number
+Member
+
+Attributes: MemberID (Unique Identifier), Last Name, First Name, Address, Date of Birth, Gender
+Relationships: RegisteredAt (with Gymnasium)
+Session
+
+Attributes: SessionID (Unique Identifier), Type of Sport, Schedule
+Relationships: LedBy (with Coach), HostedAt (with Gymnasium), RegisteredMembers (with Member)
+Coach
+
+Attributes: CoachID (Unique Identifier), Last Name, First Name, Age, Specialty
+Relationships: Teaches (with Session)
+Relationships:
+
+RegisteredAt: Many-to-One relationship between Member and Gymnasium. Each member is registered at one gymnasium, but each gymnasium can have many registered members.
+
+LedBy: Many-to-Many relationship between Session and Coach. Each session can be led by one or more coaches, and each coach can lead multiple sessions.
+
+HostedAt: Many-to-Many relationship between Session and Gymnasium. Each session can be hosted at one or more gymnasiums, and each gymnasium can host multiple sessions.
+
+RegisteredMembers: Many-to-Many relationship between Session and Member. Each session can have multiple registered members, and each member can register for multiple sessions.
+
+This ERD captures the relationships between gymnasiums, members, sessions, and coaches, allowing for the management of gym memberships, session registrations, and coaching assignments across multiple gymnasium locations.
